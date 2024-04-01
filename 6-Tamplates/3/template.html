@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Page</title>
+</head>
+<body>
+<h1>Cursos</h1>
+
+<table>
+    <th>
+        <tr>
+            <th>Name</th>
+            <th>Horas</th>
+        </tr>
+    </th>
+    <tbody>
+        {{ range .}}
+            {{ if eq .CargaHoraria 60 }}
+        <tr>
+            <td>{{ .Nome }}</td>
+            <td>{{ .CargaHoraria}}</td>
+        </tr>
+        {{ end }}
+        {{ end }}
+    </tbody>
+</table>
+
+<script src="script.js"></script>
+</body>
+</html>
