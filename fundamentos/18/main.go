@@ -1,7 +1,7 @@
 package main
 
 import (
-	"curso-golang/Fundamentos/18/matematica"
+	"curso-golang/fundamentos/18/matematica"
 	"fmt"
 )
 
