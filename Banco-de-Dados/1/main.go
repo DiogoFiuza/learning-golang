@@ -135,7 +135,7 @@ func deleteProduct(db *sql.DB, id string) error {
 	return nil
 }
 
-// Executar esses comandos antes de rodar essa aplicação
+// Execute these commands before running this application
 //  docker-compose up -d
 //- docker-compose exec mysql bash
 //- mysql -uroot -p goexpert
