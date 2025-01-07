@@ -10,19 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type FakeClock struct{}
-
-func (c FakeClock) Now() time.Time {
-	return time.Date(2023, 6, 30, 20, 0, 0, 0, time.Local)
-}
-
 func TestNewProduct(t *testing.T) {
 
-	fc := FakeClock{}
+	fc := clock.FakeClock{}
 
 	type NewProductPrams struct {
 		name  string
-		price int
+		price float64
 		c     clock.Clock
 	}
 
@@ -40,10 +34,10 @@ func TestNewProduct(t *testing.T) {
 				c:     fc,
 			},
 			expectedProduct: &Product{
-				ID:       entity.NewID(),
-				Name:     "Bicicleta",
-				Price:    999,
-				CreateAt: fc.Now(),
+				ID:        entity.NewID(),
+				Name:      "Bicicleta",
+				Price:     999.00,
+				CreatedAt: fc.Now(),
 			},
 			err: nil,
 		},
@@ -74,7 +68,7 @@ func TestProduct_Validate(t *testing.T) {
 	type fields struct {
 		ID       entity.ID
 		Name     string
-		Price    int
+		Price    float64
 		CreateAt time.Time
 	}
 	tests := []struct {
@@ -87,7 +81,7 @@ func TestProduct_Validate(t *testing.T) {
 			fields: fields{
 				ID:       entity.NewID(),
 				Name:     "Bicicleta",
-				Price:    999,
+				Price:    999.00,
 				CreateAt: time.Now(),
 			},
 			wantErr: nil,
@@ -97,7 +91,7 @@ func TestProduct_Validate(t *testing.T) {
 			fields: fields{
 				ID:       entity.NewID(),
 				Name:     "",
-				Price:    999,
+				Price:    999.00,
 				CreateAt: time.Now(),
 			},
 			wantErr: errors.New("name is required"),
@@ -126,10 +120,10 @@ func TestProduct_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := &Product{
-				ID:       tt.fields.ID,
-				Name:     tt.fields.Name,
-				Price:    tt.fields.Price,
-				CreateAt: tt.fields.CreateAt,
+				ID:        tt.fields.ID,
+				Name:      tt.fields.Name,
+				Price:     tt.fields.Price,
+				CreatedAt: tt.fields.CreateAt,
 			}
 			err := p.Validate()
 			assert.Equal(t, tt.wantErr, err)
