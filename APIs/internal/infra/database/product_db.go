@@ -50,7 +50,7 @@ func (p *Product) Update(product entity.Product) error {
 
 	return p.DB.Save(&product).Error
 
-	// Outra forma
+	// Another way
 	//return p.DB.Model(&product).Updates(product).Error
 }
 

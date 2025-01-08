@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+// This test has some lines that repeat, we can extract this lines to a function, but I repeat this lines to exercise the code
+// Because I believe the repetition is good for memorization
+
 func TestProduct_Create(t *testing.T) {
 	db, err := gorm.Open(sqlite.Open("file::memory:"), &gorm.Config{})
 	if err != nil {
