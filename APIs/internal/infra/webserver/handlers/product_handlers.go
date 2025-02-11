@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/dto"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/entity"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/infra/database"
@@ -9,6 +10,7 @@ import (
 	entityPkg "github.com/DiogoFiuza/learning-golang/APIs/pkg/entity"
 	"github.com/go-chi/chi"
 	"net/http"
+	"strconv"
 )
 
 type ProductHandler struct {
@@ -56,10 +58,6 @@ func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -98,26 +96,58 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(product)
+	if err := json.NewEncoder(w).Encode(product); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
-//func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
-//	page, err := strconv.Atoi(r.URL.Query().Get("page"))
-//	page := chi.
-//	if err != nil {
-//		return
-//	}
-//	limit, err := strconv.Atoi(r.URL.Query().Get("page"))
-//	if err != nil {
-//		return
-//	}
-//	sort := r.URL.Query().Get("sort")
-//
-//	products, err := h.ProductDB.FindAll(page, limit, sort)
-//	pd, err := json.Marshal(products)
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		return
-//	}
-//	w.Write(pd)
-//}
+func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	_, err := h.ProductDB.FindByID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	err = h.ProductDB.Delete(id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
+	sort := r.URL.Query().Get("sort")
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		fmt.Printf("deu ruim no page: %d", pageInt)
+		pageInt = 0
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		fmt.Printf("deu ruim no limit: %d", limitInt)
+		limitInt = 0
+	}
+
+	products, err := h.ProductDB.FindAll(pageInt, limitInt, sort)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(products); err != nil {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+}
