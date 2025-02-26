@@ -30,3 +30,4 @@ Content-Type: application/json
 
 GET http://localhost:8000/products?page=3&limit=2 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer "ADD TOKEN HERE"

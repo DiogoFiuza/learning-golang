@@ -11,7 +11,7 @@ type CreateUserDTO struct {
 	Password string `json:"password"`
 }
 
-type GetJwtDTO struct {
+type GetUserDTO struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
