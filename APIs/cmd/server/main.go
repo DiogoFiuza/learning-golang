@@ -2,18 +2,33 @@ package main
 
 import (
 	"github.com/DiogoFiuza/learning-golang/APIs/configs"
+	_ "github.com/DiogoFiuza/learning-golang/APIs/docs"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/entity"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/infra/database"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
+// @title           Golang Course
+// @version         1.0
+// @description     This is a project to learn Golang
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Diogo Fiuza
+// @contact.email  difipalm@gmail.com
+
+// @host      localhost:8000
+// @BasePath  /
+// @securityDefinitions.basic  ApiKeyAuth
+// @in header
+// @name Autorization
 func main() {
 	config, err := configs.LoadConfig(".")
 	if err != nil {
@@ -53,6 +68,10 @@ func main() {
 
 	r.Post("/users", userHandler.CreateUser)
 	r.Post("/users/generate_token", userHandler.GetJWT)
+
+	r.Get("/docs/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8000/docs/doc.json"), //The url pointing to API definition
+	))
 
 	if err := http.ListenAndServe(":8000", r); err != nil {
 		panic(err)
