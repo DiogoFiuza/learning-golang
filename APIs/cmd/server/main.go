@@ -1,6 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/DiogoFiuza/learning-golang/APIs/configs"
 	_ "github.com/DiogoFiuza/learning-golang/APIs/docs"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/entity"
@@ -12,23 +16,19 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
 // @title           Golang Course
 // @version         1.0
 // @description     This is a project to learn Golang
 // @termsOfService  http://swagger.io/terms/
-
 // @contact.name   Diogo Fiuza
 // @contact.email  difipalm@gmail.com
-
 // @host      localhost:8000
 // @BasePath  /
-// @securityDefinitions.basic  ApiKeyAuth
+// @securityDefinitions.apikey ApiKeyAuth
 // @in header
-// @name Autorization
+// @name Authorization
 func main() {
 	config, err := configs.LoadConfig(".")
 	if err != nil {
@@ -72,6 +72,8 @@ func main() {
 	r.Get("/docs/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8000/docs/doc.json"), //The url pointing to API definition
 	))
+
+	fmt.Println("Server is running on port 8000 🔥")
 
 	if err := http.ListenAndServe(":8000", r); err != nil {
 		panic(err)

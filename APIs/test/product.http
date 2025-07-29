@@ -1,5 +1,6 @@
 POST http://localhost:8000/products HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTM1NTQyOTQsInN1YiI6IjNiMWE5ZWM1LTJlMDItNGJlNS1iMTJmLWZmZTEwZDRmMTFiMCJ9.YL7aoaosp7Z4TqDOMVgf8GFsMhIgQxqyg_icg4zZNjE
 
 {
     "name": "Product 7",

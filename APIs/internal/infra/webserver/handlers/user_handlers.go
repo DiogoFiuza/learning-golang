@@ -2,19 +2,17 @@ package handlers
 
 import (
 	"encoding/json"
+	"net/http"
+	"time"
+
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/dto"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/entity"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/infra/database"
 	"github.com/go-chi/jwtauth"
-	"net/http"
-	"time"
 )
 
 type UserHandler struct {
 	UserDB database.UserInterface
-}
-type Error struct {
-	Message string `json:"message"`
 }
 
 func NewUserHandler(db database.UserInterface) *UserHandler {

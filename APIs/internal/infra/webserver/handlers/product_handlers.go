@@ -3,18 +3,23 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/dto"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/entity"
 	"github.com/DiogoFiuza/learning-golang/APIs/internal/infra/database"
 	"github.com/DiogoFiuza/learning-golang/APIs/pkg/clock"
 	entityPkg "github.com/DiogoFiuza/learning-golang/APIs/pkg/entity"
 	"github.com/go-chi/chi"
-	"net/http"
-	"strconv"
 )
 
 type ProductHandler struct {
 	ProductDB database.ProductInterface
+}
+
+type Error struct {
+	Message string `json:"message"`
 }
 
 func NewProductHandler(db database.ProductInterface) *ProductHandler {
@@ -23,6 +28,17 @@ func NewProductHandler(db database.ProductInterface) *ProductHandler {
 	}
 }
 
+// CreateProduct godoc
+// @Summary      Create product
+// @Description  Create product
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        request   body      dto.CreateProductDTO  true  "product request"
+// @Success      201
+// @Failure      500  {object}  Error
+// @Router       /products [post]
+// @Security ApiKeyAuth
 func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var product dto.CreateProductDTO
 	err := json.NewDecoder(r.Body).Decode(&product)
@@ -46,6 +62,19 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetProduct godoc
+// @Summary      Get product by ID
+// @Description  Get product by ID
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Product ID"
+// @Success      200  {object}  entity.Product
+// @Failure      400  {object}  Error
+// @Failure      404  {object}  Error
+// @Failure      500  {object}  Error
+// @Router       /products/{id} [get]
+// @Security ApiKeyAuth
 func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
@@ -64,6 +93,20 @@ func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(product)
 }
 
+// UpdateProduct godoc
+// @Summary      Update product by ID
+// @Description  Update product by ID
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Product ID"
+// @Param        request   body      entity.Product  true  "Product request"
+// @Success      200  {object}  entity.Product
+// @Failure      400  {object}  Error
+// @Failure      404  {object}  Error
+// @Failure      500  {object}  Error
+// @Router       /products/{id} [put]
+// @Security ApiKeyAuth
 func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
@@ -101,6 +144,19 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// DeleteProduct godoc
+// @Summary      Delete product by ID
+// @Description  Delete product by ID
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Product ID"
+// @Success      200
+// @Failure      400  {object}  Error
+// @Failure      404  {object}  Error
+// @Failure      500  {object}  Error
+// @Router       /products/{id} [delete]
+// @Security ApiKeyAuth
 func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
@@ -121,6 +177,20 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// GetProducts godoc
+// @Summary      Get all products
+// @Description  Get all products with pagination and sorting
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        page   query     int    false  "Page number"
+// @Param        limit  query     int    false  "Number of products per page"
+// @Param        sort   query     string false  "Sort by field (e.g., 'name', 'price')"
+// @Success      200    {array}   entity.Product
+// @Failure      400    {object}  Error
+// @Failure      500    {object}  Error
+// @Router       /products [get]
+// @Security ApiKeyAuth
 func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	page := r.URL.Query().Get("page")
 	limit := r.URL.Query().Get("limit")
